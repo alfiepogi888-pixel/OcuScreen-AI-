@@ -1,0 +1,12 @@
+0 Normal
+1 Redness
+2 Blood Patch
+3 Swelling
+4 Discharge
+5 Watery
+6 Cornea Abnormal
+7 Eyelid Abnormal
+8 Yellow Eye
+9 Bulging Eye
+10 Pale Inner Eyelid
+11 Back Ground

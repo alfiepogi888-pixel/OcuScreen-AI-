@@ -1,0 +1,369 @@
+{
+  "version": "0.1.0-prototype",
+  "disclaimer": "Bản thử nghiệm hỗ trợ sàng lọc, chưa được thẩm định lâm sàng. Mức ưu tiên và điểm khớp không phải chẩn đoán hay xác suất mắc bệnh.",
+  "symptoms": [
+    {
+      "id": "gritty",
+      "label": "Cộm xốn / cảm giác có dị vật"
+    },
+    {
+      "id": "itch",
+      "label": "Ngứa mắt"
+    },
+    {
+      "id": "pain",
+      "label": "Đau nhức mắt"
+    },
+    {
+      "id": "severe_pain",
+      "label": "Đau mắt dữ dội"
+    },
+    {
+      "id": "discharge",
+      "label": "Chảy ghèn / mi dính"
+    },
+    {
+      "id": "tearing",
+      "label": "Chảy nước mắt"
+    },
+    {
+      "id": "blurred",
+      "label": "Nhìn mờ mới xuất hiện hoặc tăng lên"
+    },
+    {
+      "id": "vision_loss",
+      "label": "Giảm / mất thị lực đột ngột"
+    },
+    {
+      "id": "photophobia",
+      "label": "Đau khi nhìn ánh sáng"
+    },
+    {
+      "id": "dry",
+      "label": "Khô / rát mắt"
+    },
+    {
+      "id": "red_eye",
+      "label": "Tự thấy mắt đỏ"
+    },
+    {
+      "id": "lid_lump",
+      "label": "Có cục ở mí mắt"
+    },
+    {
+      "id": "crusts",
+      "label": "Vảy ở chân lông mi"
+    },
+    {
+      "id": "fever",
+      "label": "Sốt"
+    },
+    {
+      "id": "pain_movement",
+      "label": "Đau khi đảo mắt"
+    },
+    {
+      "id": "double_vision",
+      "label": "Nhìn đôi mới xuất hiện"
+    },
+    {
+      "id": "headache_nausea",
+      "label": "Đau đầu dữ dội kèm buồn nôn"
+    },
+    {
+      "id": "injury",
+      "label": "Chấn thương mắt hoặc dị vật mắc trong mắt"
+    },
+    {
+      "id": "chemical",
+      "label": "Hóa chất bắn vào mắt"
+    },
+    {
+      "id": "contacts",
+      "label": "Đang dùng kính áp tròng"
+    },
+    {
+      "id": "yellow_skin",
+      "label": "Vàng da / tự thấy lòng trắng mắt vàng"
+    },
+    {
+      "id": "dark_urine",
+      "label": "Nước tiểu sẫm màu"
+    },
+    {
+      "id": "fatigue",
+      "label": "Mệt mỏi bất thường"
+    },
+    {
+      "id": "palpitations",
+      "label": "Hồi hộp / tim đập nhanh"
+    },
+    {
+      "id": "breathless",
+      "label": "Khó thở khi gắng sức"
+    },
+    {
+      "id": "bulging",
+      "label": "Tự thấy mắt lồi mới xuất hiện"
+    }
+  ],
+  "image_signs": {
+    "Normal": {
+      "class_id": 0,
+      "description": "Không thấy dấu hiệu nổi bật trong ảnh",
+      "priority": "low"
+    },
+    "Redness": {
+      "class_id": 1,
+      "description": "Đỏ mắt",
+      "priority": "medium"
+    },
+    "Blood Patch": {
+      "class_id": 2,
+      "description": "Mảng đỏ / máu trên mắt",
+      "priority": "medium"
+    },
+    "Swelling": {
+      "class_id": 3,
+      "description": "Sưng quanh mắt",
+      "priority": "medium"
+    },
+    "Discharge": {
+      "class_id": 4,
+      "description": "Ghèn / dịch",
+      "priority": "medium"
+    },
+    "Watery": {
+      "class_id": 5,
+      "description": "Chảy nước mắt",
+      "priority": "medium"
+    },
+    "Cornea Abnormal": {
+      "class_id": 6,
+      "description": "Bất thường vùng giác mạc cần được kiểm tra trực tiếp",
+      "priority": "high"
+    },
+    "Eyelid Abnormal": {
+      "class_id": 7,
+      "description": "Bất thường mí mắt",
+      "priority": "medium"
+    },
+    "Yellow Eye": {
+      "class_id": 8,
+      "description": "Lòng trắng mắt có vẻ vàng, cần đánh giá nguyên nhân",
+      "priority": "high"
+    },
+    "Bulging Eye": {
+      "class_id": 9,
+      "description": "Mắt có vẻ lồi, cần được bác sĩ đánh giá",
+      "priority": "high"
+    },
+    "Pale Inner Eyelid": {
+      "class_id": 10,
+      "description": "Mặt trong mí mắt có vẻ nhợt, ảnh không đủ xác định thiếu máu",
+      "priority": "medium"
+    }
+  },
+  "urgent_symptoms": [
+    "severe_pain",
+    "vision_loss",
+    "photophobia",
+    "headache_nausea",
+    "injury",
+    "chemical",
+    "blurred",
+    "double_vision"
+  ],
+  "urgent_combinations": [
+    {
+      "id": "contacts_red",
+      "all_symptoms": [
+        "contacts",
+        "red_eye"
+      ],
+      "image_signs": [],
+      "reason": "Đỏ mắt khi dùng kính áp tròng"
+    },
+    {
+      "id": "contacts_image",
+      "all_symptoms": [
+        "contacts"
+      ],
+      "image_signs": [
+        "Redness"
+      ],
+      "reason": "Ảnh gợi ý đỏ mắt khi dùng kính áp tròng"
+    },
+    {
+      "id": "orbit",
+      "all_symptoms": [
+        "fever",
+        "pain_movement"
+      ],
+      "image_signs": [],
+      "reason": "Sốt kèm đau khi đảo mắt"
+    },
+    {
+      "id": "jaundice",
+      "all_symptoms": [
+        "yellow_skin"
+      ],
+      "image_signs": [],
+      "reason": "Tự ghi nhận vàng da hoặc vàng mắt"
+    },
+    {
+      "id": "new_bulging",
+      "all_symptoms": [
+        "bulging"
+      ],
+      "image_signs": [],
+      "reason": "Tự ghi nhận mắt lồi mới xuất hiện"
+    }
+  ],
+  "diseases": [
+    {
+      "id": "pattern_1",
+      "name": "Viêm kết mạc",
+      "image_signs": [
+        "Redness",
+        "Discharge",
+        "Watery"
+      ],
+      "symptoms": [
+        "gritty",
+        "discharge",
+        "red_eye",
+        "tearing"
+      ],
+      "note": "Nhiều nguyên nhân có biểu hiện giống nhau; cần khám để phân biệt."
+    },
+    {
+      "id": "pattern_2",
+      "name": "Kích ứng / dị ứng mắt",
+      "image_signs": [
+        "Redness",
+        "Watery",
+        "Swelling"
+      ],
+      "symptoms": [
+        "itch",
+        "tearing",
+        "red_eye"
+      ],
+      "note": "Ngứa và chảy nước mắt có thể gặp trong dị ứng hoặc kích ứng."
+    },
+    {
+      "id": "pattern_3",
+      "name": "Khô mắt",
+      "image_signs": [
+        "Redness",
+        "Watery"
+      ],
+      "symptoms": [
+        "dry",
+        "gritty",
+        "tearing"
+      ],
+      "note": "Cần đánh giá bề mặt mắt nếu kéo dài."
+    },
+    {
+      "id": "pattern_4",
+      "name": "Mảng đỏ dưới kết mạc",
+      "image_signs": [
+        "Blood Patch"
+      ],
+      "symptoms": [
+        "red_eye"
+      ],
+      "note": "Không thể phân biệt nguyên nhân chỉ bằng ảnh; đau hoặc giảm thị lực cần khám ngay."
+    },
+    {
+      "id": "pattern_5",
+      "name": "Vấn đề mí mắt / viêm bờ mi",
+      "image_signs": [
+        "Eyelid Abnormal",
+        "Swelling",
+        "Discharge"
+      ],
+      "symptoms": [
+        "crusts",
+        "itch",
+        "gritty",
+        "lid_lump"
+      ],
+      "note": "Bác sĩ cần kiểm tra mí và lông mi."
+    },
+    {
+      "id": "pattern_6",
+      "name": "Bất thường giác mạc",
+      "image_signs": [
+        "Cornea Abnormal",
+        "Redness"
+      ],
+      "symptoms": [
+        "pain",
+        "photophobia",
+        "blurred",
+        "gritty"
+      ],
+      "note": "Ảnh ngoài mắt không xác định được loại tổn thương hoặc đục thủy tinh thể."
+    },
+    {
+      "id": "pattern_7",
+      "name": "Vàng mắt cần kiểm tra toàn thân",
+      "image_signs": [
+        "Yellow Eye"
+      ],
+      "symptoms": [
+        "yellow_skin",
+        "dark_urine"
+      ],
+      "note": "Cần khám để đánh giá nguyên nhân vàng mắt; không suy ra bệnh gan từ ảnh."
+    },
+    {
+      "id": "pattern_8",
+      "name": "Mắt lồi cần kiểm tra hốc mắt / tuyến giáp",
+      "image_signs": [
+        "Bulging Eye"
+      ],
+      "symptoms": [
+        "bulging",
+        "double_vision",
+        "palpitations"
+      ],
+      "note": "Có nhiều nguyên nhân; cần khám trực tiếp."
+    },
+    {
+      "id": "pattern_9",
+      "name": "Dấu hiệu nhợt cần kiểm tra thiếu máu",
+      "image_signs": [
+        "Pale Inner Eyelid"
+      ],
+      "symptoms": [
+        "fatigue",
+        "palpitations",
+        "breathless"
+      ],
+      "note": "Chỉ xét nghiệm và đánh giá lâm sàng mới xác định thiếu máu."
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.nhs.uk/symptoms/red-eye/",
+      "scope": "Đỏ mắt, biểu hiện bề mặt mắt và dấu hiệu cần khám khẩn"
+    },
+    {
+      "url": "https://www.nhs.uk/conditions/jaundice/",
+      "scope": "Vàng mắt / vàng da"
+    },
+    {
+      "url": "https://www.nhs.uk/symptoms/bulging-eyes/",
+      "scope": "Mắt lồi"
+    },
+    {
+      "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+      "scope": "Triệu chứng toàn thân liên quan thiếu máu"
+    }
+  ],
+  "rule_notes": "Các trọng số 2 điểm ảnh + 1 điểm mỗi triệu chứng và ngưỡng 0.60 là thiết kế kỹ thuật chưa hiệu chuẩn, không phải quy tắc được các nguồn xác nhận. Bỏ chọn không được coi là bằng chứng loại trừ. Normal không trừ điểm triệu chứng."
+}
