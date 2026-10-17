@@ -1,0 +1,9 @@
+tensorflow-cpu==2.15.1
+keras==2.15.0
+numpy==1.26.4
+h5py==3.12.1
+Pillow==11.3.0
+fastapi==0.116.1
+starlette==0.47.3
+uvicorn==0.35.0
+python-multipart==0.0.20
