@@ -1,6 +1,0 @@
-{
-  "name": "ocuscreen-ai-frontend",
-  "private": true,
-  "type": "module",
-  "scripts": { "test": "node --test tests/frontend.test.js" }
-}

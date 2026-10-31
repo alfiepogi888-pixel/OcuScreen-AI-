@@ -1,3 +1,0 @@
-2026-09-18: Wrapped runtime inference exceptions as ModelUnavailable so the API preserves its symptom-only fallback. Added regression test. All 22 Python tests pass with mocked inference. TensorFlow/H5 execution was not tested here. This archive is the standalone Python app, not the current Sites implementation.
-
-2026-09-18 refactor: separated frontend modules/styles, centralized upload/form states, shared knowledge-based warnings, added asset revalidation and precomputed risk sets. Final suite: 25 Python tests + 3 Node tests passed. 1,000 risk comparisons match the original. See REFACTOR.md for scope and limitations. Browser validation blocked by unavailable Chromium/download timeouts; live site not deployed.
