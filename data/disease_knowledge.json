@@ -105,6 +105,14 @@
     {
       "id": "bulging",
       "label": "Tự thấy mắt lồi mới xuất hiện"
+    },
+    { 
+      "id": "flashes_floaters", 
+      "label": "Chớp sáng hoặc nhiều đốm đen bay xuất hiện đột ngột" 
+    },
+    { 
+      "id": "visual_curtain", 
+      "label": "Có vùng tối / màn che một phần thị trường" 
     }
   ],
   "image_signs": {
@@ -172,7 +180,9 @@
     "injury",
     "chemical",
     "blurred",
-    "double_vision"
+    "double_vision",
+    "visual_curtain",
+    "flashes_floaters"
   ],
   "urgent_combinations": [
     {
