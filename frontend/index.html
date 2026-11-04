@@ -99,6 +99,11 @@
       <p class="hint">
        Chọn tất cả mục phù hợp. Nếu không có triệu chứng, để trống.
       </p>
+      <div class="notice urgent" hidden id="urgentHint" role="alert">
+  <strong>Có dấu hiệu cần khám ngay.</strong>
+  <span id="urgentReasons"></span>
+  Đừng chờ phân tích ảnh để tìm trợ giúp y tế.
+</div>
       <label class="search-label" for="symptomSearch">Tìm triệu chứng</label>
       <input aria-describedby="searchHint" id="symptomSearch" type="search" placeholder="Ví dụ: đỏ mắt, ngứa, chảy nước mắt" autocomplete="off" aria-controls="checks"/>
       <p class="hint" id="searchHint">Tìm có dấu hoặc không dấu. Các mục đã chọn vẫn được giữ lại.</p>
@@ -110,9 +115,11 @@
        </div>
       </fieldset>
       <p class="hint" id="emptySearch" hidden role="status">Không tìm thấy triệu chứng. Thử từ khóa khác.</p>
-      <p class="notice" hidden="" id="urgentHint">
-       Có dấu hiệu cần khám ngay. Đừng chờ phân tích ảnh để tìm trợ giúp y tế.
-      </p>
+      <div class="notice urgent" hidden id="urgentHint" role="alert">
+  <strong>Có dấu hiệu cần khám ngay.</strong>
+  <span id="urgentReasons"></span>
+  Đừng chờ phân tích ảnh để tìm trợ giúp y tế.
+</div>
       <div class="actions">
        <button disabled="" id="submit" type="submit">
         Phân tích sàng lọc
@@ -148,6 +155,8 @@
     </div>
     <p class="hint" id="disclaimer">
     </p>
+    <p class="hint" id="printMeta"></p>
+<button class="secondary" id="printResult" type="button">In / lưu thành PDF</button>
    </section>
    <footer>
     OcuScreen AI · Ảnh → Dấu hiệu → Triệu chứng → Gợi ý đi khám
