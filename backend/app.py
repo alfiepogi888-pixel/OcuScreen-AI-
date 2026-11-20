@@ -37,17 +37,30 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="OcuScreen AI", lifespan=lifespan)
 
 
+# Define API routes that should NOT receive aggressive cache control
+API_ROUTES = frozenset(["/api/health", "/api/symptoms", "/api/screen"])
+
 @app.middleware("http")
 async def headers(request: Request, call_next):
     response = await call_next(request)
-    # Revalidate reusable assets; never cache screening responses.
-    response.headers["Cache-Control"] = (
-        "public, max-age=0, must-revalidate"
-        if request.url.path.startswith(("/css/", "/js/"))
-        else "no-store"
-    )
+    
+    # Determine if this is a static asset or API route
+    path = str(request.url.path)
+    is_static = path.startswith(("/css/", "/js/"))
+    is_api = any(path.startswith(route) for route in API_ROUTES)
+    
+    # Apply appropriate cache control
+    if is_static:
+        # Static assets - safe to cache with revalidation
+        response.headers["Cache-Control"] = "public, max-age=3600, must-revalidate"
+    elif is_api:
+        # API endpoints - never cache, but allow some stale responses during inference load
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    
+    # Security headers apply to all responses
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"
+    
     return response
 
 
