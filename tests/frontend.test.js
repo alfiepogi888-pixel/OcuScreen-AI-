@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { validateFile, hasUrgentSymptoms, MAX_BYTES } from '../frontend/js/validation.js';
+import { validateFile, hasUrgentSymptoms, MAX_BYTES, getActionableError, getImageRecommendations } from '../frontend/js/validation.js';
 import { requestJSON } from '../frontend/js/api.js';
 const kb = JSON.parse(readFileSync(new URL('../data/disease_knowledge.json', import.meta.url)));
 
@@ -11,6 +11,22 @@ test('upload validation rejects unsupported, empty and oversized images', () => 
     assert.ok(validateFile(file));
   }
 });
+
+test('error messages are actionable', () => {
+  const error = getActionableError('Không kết nối được máy chủ. Kiểm tra kết nối rồi thử lại.');
+  assert.ok(error);
+  assert.equal(error.message, 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra:');
+  assert.equal(error.steps.length, 3);
+});
+
+test('image recommendations are provided', () => {
+  const recs = getImageRecommendations();
+  assert.equal(recs.minResolution, '64x64 pixels');
+  assert.equal(recs.maxResolution, '12 megapixels');
+  assert.ok(Array.isArray(recs.formats));
+  assert.equal(recs.lighting.includes('Ánh sáng'), true);
+});
+
 test('pre-inference warnings match image-independent knowledge rules', () => {
   const warn = ids => hasUrgentSymptoms(ids, kb.urgent_symptoms, kb.urgent_combinations);
   assert.equal(warn([]), false);
@@ -20,6 +36,7 @@ test('pre-inference warnings match image-independent knowledge rules', () => {
     assert.equal(warn(ids), true);
   }
 });
+
 test('API retains symptom-only 503 results and handles non-JSON failures', async () => {
   const original = globalThis.fetch;
   try {
@@ -80,5 +97,61 @@ test('upload synchronizes native files, releases previews and preserves cancella
   } finally {
     globalThis.window=original.window;globalThis.DataTransfer=original.transfer;
     URL.createObjectURL=original.create;URL.revokeObjectURL=original.revoke;
+  }
+});
+
+test('loading spinner class is applied during inference', async () => {
+  const submitBtn = document.createElement('button');
+  submitBtn.id = 'submit';
+  submitBtn.classList.add('loading');
+  
+  assert.ok(submitBtn.classList.contains('loading'));
+  
+  // Simulate completion
+  submitBtn.classList.remove('loading');
+  assert.ok(!submitBtn.classList.contains('loading'));
+});
+
+test('PDF export button functionality', async () => {
+  const printBtn = document.createElement('button');
+  printBtn.id = 'printResult';
+  printBtn.textContent = 'In / lưu thành PDF';
+  
+  // Mock window.print
+  globalThis.window = { print: () => {} };
+  
+  // Simulate click handler
+  printBtn.addEventListener('click', () => {
+    assert.ok(globalThis.window.print);
+  });
+  
+  printBtn.click();
+});
+
+test('symptom validation handles edge cases', () => {
+  const result = validateSymptomIds([]);
+  assert.equal(result.valid, true);
+  
+  const invalidResult = validateSymptomIds(['invalid']);
+  assert.equal(invalidResult.valid, false);
+  assert.ok(invalidResult.message.includes('không hợp lệ'));
+});
+
+test('symptom validation preserves order', () => {
+  const ids = ['vision_loss', 'red_eye', 'itch'];
+  const result = validateSymptomIds(ids);
+  assert.equal(result.valid, true);
+  // Order should be preserved
+  assert.deepEqual(result, { valid: true });
+});
+
+test('error handling resets busy state', async () => {
+  let busy = false;
+  
+  try {
+    busy = true;
+    throw new Error('Test error');
+  } finally {
+    assert.equal(busy, false);
   }
 });

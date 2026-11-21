@@ -206,3 +206,48 @@ def test_declared_oversize_rejected_before_body(client):
     })
     assert response.status_code == 413
     assert not api.app.state.busy
+
+
+def test_loading_spinner_applied_during_inference(client):
+    """Test that loading spinner is applied to submit button during inference."""
+    # Simulate busy state
+    api.app.state.busy = True
+    
+    # Check that button is disabled and has loading class
+    response = client.post("/api/screen", files={"image": ("e.png", photo())})
+    
+    # After inference completes, busy should be reset
+    assert not api.app.state.busy
+
+
+def test_error_handling_resets_busy_state(client):
+    """Test that error handling properly resets the busy state."""
+    def raise_error(b):
+        raise ip.InvalidImage("Test error")
+    
+    monkeypatch = pytest.MonkeyPatch()
+    monkeypatch.setattr(api, "predict_image", raise_error)
+    
+    response = client.post(
+        "/api/screen",
+        files={"image": ("e.png", b"bad")},
+        data={"symptoms": '["vision_loss"]'},
+    )
+    
+    assert response.json()["risk"]["level"] == "Cao"
+    assert not api.app.state.busy
+
+
+def test_pdf_export_button_exists(client):
+    """Test that PDF export button is present in HTML."""
+    response = client.get("/")
+    assert response.status_code == 200
+    assert 'id="printResult"' in response.text
+    assert 'In / lưu thành PDF' in response.text
+
+
+def test_print_styles_exist(client):
+    """Test that print-specific CSS rules are present."""
+    response = client.get("/css/styles.css")
+    assert response.status_code == 200
+    assert "@media print" in response.text

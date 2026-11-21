@@ -83,6 +83,10 @@ $('screenForm').addEventListener('submit', async event => {
   clearResult();
   updateControls();
   status('Đang phân tích ảnh và triệu chứng…');
+  
+  // Add loading spinner class to submit button
+  $('submit').classList.add('loading');
+  
   try {
     const { data, ok } = await screenImage(state.file, ids);
     renderResult(data);
@@ -91,6 +95,7 @@ $('screenForm').addEventListener('submit', async event => {
     status(error.message, true);
   } finally {
     state.busy = false;
+    $('submit').classList.remove('loading');
     updateControls();
   }
 });

@@ -115,6 +115,16 @@ export function renderResult({ image, risk }) {
   announcer.className = 'sr-only';
   announcer.textContent = 'Kết quả sàng lọc đã sẵn sàng. Vui lòng xem chi tiết.';
   document.body.prepend(announcer);
+  
+  // Add PDF export functionality if button exists
+  const printBtn = byId('printResult');
+  if (printBtn) {
+    printBtn.addEventListener('click', () => {
+      window.print();
+      printBtn.textContent = 'Đang in…';
+      setTimeout(() => { printBtn.textContent = 'In / lưu thành PDF'; }, 2000);
+    });
+  }
 }
 
 /** Accent-insensitive search preserves checked inputs, including hidden matches. */
