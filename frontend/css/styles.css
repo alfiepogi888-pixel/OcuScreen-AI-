@@ -426,3 +426,26 @@ input[type=search] { width: 100%; min-width: 0; border: 1px solid var(--border);
 #screenForm[aria-busy=true] #submit::before { content: ''; display: inline-block; width: 14px; height: 14px; margin-right: 8px; border: 2px solid #ffffff70; border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media(prefers-reduced-motion:reduce) { #screenForm[aria-busy=true] #submit::before { animation: none; } }
+
+/* Loading spinner for submit button */
+#submit.loading {
+  cursor: progress;
+}
+
+/* Badge color coding for confidence levels */
+.badge.uncertain {
+  background: #fff4e7;
+  color: #986018;
+}
+
+/* Better error message styling */
+#status[data-error=true] {
+  color: #a33325;
+  font-weight: 600;
+}
+
+/* Focus management for result section */
+#result:focus {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}

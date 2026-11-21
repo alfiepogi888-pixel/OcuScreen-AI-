@@ -68,7 +68,7 @@ const filterThrottle = () => {
   const timeoutId = setTimeout(() => {
     filterState.pendingOperations.forEach(op => op());
     filterState.pendingOperations = [];
-  }, 150); // Debounce delay - allows visual feedback during typing
+  }, 300); // Increased debounce delay from 150ms to 300ms for better UX
   
   // Store operation to execute when throttle clears
   if (!filterState.query) return; // Don't debounce on empty queries (instant show all)
