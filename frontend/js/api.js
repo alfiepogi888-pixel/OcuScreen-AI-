@@ -27,5 +27,5 @@ export function screenImage(file, symptoms) {
   const body = new FormData();
   body.append('image', file);
   body.append('symptoms', JSON.stringify(symptoms));
-  return requestJSON('/api/screen', { method: 'POST', body });
+  return requestJSON('/api/screen', { method: 'POST', body }, 120000);
 }
