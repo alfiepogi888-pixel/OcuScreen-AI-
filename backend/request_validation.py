@@ -12,43 +12,62 @@ MAX_REQUEST_BYTES = MAX_BYTES + 65536
 UPLOAD_TIMEOUT_SECONDS = 30
 
 
-async def buffer_upload(request: Request) -> None:
+def pick(lang: str, vi: str, en: str) -> str:
+    """User-facing text in the requested language (English for lang == "en", else Vietnamese)."""
+    return en if lang == "en" else vi
+
+
+async def buffer_upload(request: Request, lang: str = "vi") -> None:
     """Bound chunked requests too; Content-Length alone is not trustworthy."""
     media_type = (
         request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
     )
     if media_type != "multipart/form-data":
-        raise HTTPException(415, "Yêu cầu phải là multipart/form-data.")
+        raise HTTPException(
+            415,
+            pick(lang, "Yêu cầu phải là multipart/form-data.", "The request must be multipart/form-data."),
+        )
     content_length = request.headers.get("content-length")
     if content_length is not None:
         if not content_length.isascii() or not content_length.isdecimal():
-            raise HTTPException(400, "Content-Length không hợp lệ.")
+            raise HTTPException(400, pick(lang, "Content-Length không hợp lệ.", "Invalid Content-Length."))
         digits = content_length.lstrip("0") or "0"
         if len(digits) > len(str(MAX_REQUEST_BYTES)) or int(digits) > MAX_REQUEST_BYTES:
-            raise HTTPException(413, "Ảnh vượt quá giới hạn 5 MB.")
+            raise HTTPException(
+                413, pick(lang, "Ảnh vượt quá giới hạn 5 MB.", "The image exceeds the 5 MB limit.")
+            )
     chunks, size = [], 0
     try:
         async with asyncio.timeout(UPLOAD_TIMEOUT_SECONDS):
             async for chunk in request.stream():
                 size += len(chunk)
                 if size > MAX_REQUEST_BYTES:
-                    raise HTTPException(413, "Ảnh vượt quá giới hạn 5 MB.")
+                    raise HTTPException(
+                413, pick(lang, "Ảnh vượt quá giới hạn 5 MB.", "The image exceeds the 5 MB limit.")
+            )
                 chunks.append(chunk)
     except TimeoutError as exc:
-        raise HTTPException(408, "Upload quá lâu. Vui lòng thử lại.") from exc
+        raise HTTPException(
+            408, pick(lang, "Upload quá lâu. Vui lòng thử lại.", "The upload took too long. Please try again.")
+        ) from exc
     # Starlette's form parser consumes this bounded body through request.stream().
     request._body = b"".join(chunks)
 
 
-def parse_symptoms(raw: str) -> list[str]:
+def parse_symptoms(raw: str, lang: str = "vi") -> list[str]:
     try:
         ids = json.loads(raw)
     except (ValueError, TypeError) as exc:
-        raise HTTPException(422, "symptoms phải là chuỗi JSON dạng danh sách.") from exc
+        raise HTTPException(
+            422,
+            pick(lang, "symptoms phải là chuỗi JSON dạng danh sách.", "symptoms must be a JSON-encoded list."),
+        ) from exc
     if (
         not isinstance(ids, list)
         or len(ids) > len(SYMPTOMS)
         or any(not isinstance(item, str) or item not in SYMPTOMS for item in ids)
     ):
-        raise HTTPException(422, "Danh sách triệu chứng không hợp lệ.")
+        raise HTTPException(
+            422, pick(lang, "Danh sách triệu chứng không hợp lệ.", "The symptom list is not valid.")
+        )
     return list(dict.fromkeys(ids))
