@@ -4,11 +4,27 @@ export async function requestJSON(url, options = {}, timeout = 90000) {
   const timer = setTimeout(() => controller.abort(), timeout);
   try {
     const response = await fetch(url, { ...options, signal: controller.signal });
-    const data = await response.json().catch(() => null);
-    if (!data || (!response.ok && !data.risk)) {
+    let data = null;
+    if (response.ok) {
+      try {
+        data = await response.json();
+      } catch (e) {
+        // Non-JSON response - treat as error
+        throw new Error('Máy chủ trả về dữ liệu không hợp lệ.');
+      }
+    }
+    
+    // Check for error responses with detail field
+    if (!data && !response.ok) {
       throw new Error(typeof data?.detail === 'string' ? data.detail :
         'Máy chủ chưa trả được kết quả. Vui lòng thử lại.');
     }
+    
+    // For 503 responses, accept them even without risk field (symptom-only results)
+    if (!response.ok && !data?.risk) {
+      throw new Error('Model chưa sẵn sàng. Chỉ có kết quả triệu chứng.');
+    }
+    
     return { data, ok: response.ok };
   } catch (error) {
     if (error.name === 'AbortError') throw new Error('Máy chủ phản hồi quá lâu. Vui lòng thử lại.');
