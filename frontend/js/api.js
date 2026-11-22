@@ -1,3 +1,5 @@
+import { t, getLang } from './i18n.js';
+
 /** JSON transport, including symptom-only results returned with HTTP 503. */
 export async function requestJSON(url, options = {}, timeout = 90000) {
   const controller = new AbortController();
@@ -7,16 +9,16 @@ export async function requestJSON(url, options = {}, timeout = 90000) {
     let data = null;
     try { data = await response.json(); } catch { /* body is not JSON */ }
     if (response.ok) {
-      if (!data) throw new Error('Máy chủ trả về dữ liệu không hợp lệ.');
+      if (!data) throw new Error(t('err.badData'));
       return { data, ok: true };
     }
     // Model unavailable: the server still returns a symptom-only result with a `risk` field.
     if (data?.risk) return { data, ok: false };
     throw new Error(typeof data?.detail === 'string' ? data.detail
-      : 'Máy chủ chưa trả được kết quả. Vui lòng thử lại.');
+      : t('err.server'));
   } catch (error) {
-    if (error.name === 'AbortError') throw new Error('Máy chủ phản hồi quá lâu. Vui lòng thử lại.');
-    if (error instanceof TypeError) throw new Error('Không kết nối được máy chủ. Kiểm tra kết nối rồi thử lại.');
+    if (error.name === 'AbortError') throw new Error(t('err.timeout'));
+    if (error instanceof TypeError) throw new Error(t('err.network'));
     throw error;
   } finally {
     clearTimeout(timer);
@@ -24,12 +26,12 @@ export async function requestJSON(url, options = {}, timeout = 90000) {
 }
 
 export function fetchSymptoms() {
-  return requestJSON('/api/symptoms', {}, 15000);
+  return requestJSON('/api/symptoms?lang=' + getLang(), {}, 15000);
 }
 
 export function screenImage(file, symptoms) {
   const body = new FormData();
   body.append('image', file);
   body.append('symptoms', JSON.stringify(symptoms));
-  return requestJSON('/api/screen', { method: 'POST', body }, 120000);
+  return requestJSON('/api/screen?lang=' + getLang(), { method: 'POST', body }, 120000);
 }
