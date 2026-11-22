@@ -9,8 +9,9 @@ export function validateFile(file) {
 /** Only image-independent warning rules can be evaluated before inference. */
 export function hasUrgentSymptoms(ids, urgentIds, combinations) {
   const selected = new Set(ids);
-  return urgentIds.some(id => selected.has(id)) || combinations.some(rule =>
-    !rule.image_signs.length && rule.all_symptoms.every(id => selected.has(id)));
+  return (urgentIds || []).some(id => selected.has(id)) || (combinations || []).some(rule =>
+    !(rule.image_signs || []).length && (rule.all_symptoms || []).length > 0 &&
+    rule.all_symptoms.every(id => selected.has(id)));
 }
 
 /** Enhanced error messages with actionable steps */
