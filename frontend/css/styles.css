@@ -555,9 +555,15 @@ html[data-theme=dark] :is(.hint, small) { color: #9db4b8; }
 html[data-theme=dark] .tag { background: #123b38; color: #7fe0d3; }
 html[data-theme=dark] button.secondary { background: #1d343a; color: #cfe3e4; }
 html[data-theme=dark] button.secondary:hover:not(:disabled) { background: #27454c; }
+html[data-theme=dark] .file-meta[data-error=true] { color: #ff8a7a; }
 html[data-theme=dark] .reason { color: #ff9f92; }
 html[data-theme=dark] #status { color: #e0b36a; }
 html[data-theme=dark] #status[data-error=true] { color: #ff8a7a; }
 html[data-theme=dark] .high { background: #4a1f1b; color: #ffb4aa; }
 html[data-theme=dark] .medium { background: #4a3714; color: #f0c47a; }
 html[data-theme=dark] .low { background: #173d2a; color: #8fe0b4; }
+
+h1 span { display: block; }
+.file-meta[data-error=true] { color: #a33325; font-weight: 600; }
+#removeImage { margin: 10px 0 4px; padding: 9px 18px; font-size: 13px; }
+.theme-toggle { min-width: 64px; }

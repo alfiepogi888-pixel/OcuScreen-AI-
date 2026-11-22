@@ -1,4 +1,13 @@
 import { validateFile } from './validation.js';
+import { t } from './i18n.js';
+
+const EXT_TYPES = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
+/** Some systems report an empty MIME type; infer it from the extension so the file is not rejected. */
+function normalize(file) {
+  if (file.type) return file;
+  const type = EXT_TYPES[file.name.split('.').pop().toLowerCase()];
+  return type ? new File([file], file.name, { type }) : file;
+}
 
 /** Own the native input and preview URL together; release URLs on replacement/reset. */
 export function createUpload({ input, dropzone, preview, meta, onChange, onError, isBusy }) {
@@ -22,6 +31,7 @@ export function createUpload({ input, dropzone, preview, meta, onChange, onError
   function choose(next) {
     if (isBusy()) return;
     if (!next) { syncInput(); return; } // Preserve the existing file when the picker is cancelled.
+    next = normalize(next);
     const error = validateFile(next);
     clear();
     if (error) {
@@ -42,13 +52,19 @@ export function createUpload({ input, dropzone, preview, meta, onChange, onError
     if (!file) return;
     clear();
     onChange(null);
-    onError('Không đọc được ảnh. Hãy chọn ảnh khác.');
+    onError(t('err.unreadable'));
   });
-  for (const type of ['dragover', 'dragleave', 'drop']) {
+  for (const type of ['dragenter', 'dragover', 'dragleave', 'drop']) {
     dropzone.addEventListener(type, event => {
       event.preventDefault();
-      dropzone.classList.toggle('dragging', type === 'dragover' && !isBusy());
-      if (type === 'drop' && !isBusy()) choose(event.dataTransfer.files[0]);
+      const over = type === 'dragenter' || type === 'dragover';
+      if (over && event.dataTransfer) event.dataTransfer.dropEffect = isBusy() ? 'none' : 'copy';
+      dropzone.classList.toggle('dragging', over && !isBusy());
+      if (type === 'drop' && !isBusy()) {
+        const dropped = event.dataTransfer?.files?.[0];
+        if (dropped) choose(dropped);
+        else onError(t('err.noFile'));
+      }
     });
   }
   window.addEventListener('pagehide', event => {

@@ -1,8 +1,10 @@
+import { t } from './i18n.js';
+
 export const MAX_BYTES = 5 * 1024 * 1024;
 export function validateFile(file) {
-  if (!file || !file.size) return 'Hãy chọn một ảnh mắt.';
-  if (file.size > MAX_BYTES) return 'Ảnh lớn hơn 5 MB. Hãy chọn ảnh nhỏ hơn.';
-  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) return 'Chỉ nhận ảnh JPEG, PNG hoặc WebP.';
+  if (!file || !file.size) return t('err.pickImage');
+  if (file.size > MAX_BYTES) return t('err.size');
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) return t('err.type');
   return null;
 }
 
