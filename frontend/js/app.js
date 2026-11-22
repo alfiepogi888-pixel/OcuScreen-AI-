@@ -75,12 +75,20 @@ function applyLang(lang) {
   applyTheme(document.documentElement.dataset.theme || 'light');
   renderStatus();
   updateControls();
-  if (state.result && !$('result').hidden) renderResult(state.result, { focus: false });
 }
-$('langToggle').addEventListener('click', () => {
+$('langToggle').addEventListener('click', async () => {
   const next = getLang() === 'vi' ? 'en' : 'vi';
   applyLang(next);
   store.set('lang', next);
+  if (!state.loaded) return;
+  // Symptom names and result text come from the server, so ask for them again in the new language.
+  $('symptomSearch').value = ''; // a keyword typed in one language would hide every symptom in the other
+  try {
+    await loadSymptoms();
+    if (state.result && state.file) await analyze({ quiet: true });
+  } catch (error) {
+    status(error.message, true, true);
+  }
 });
 
 /* Stop the browser from opening a file that is dropped outside the dropzone. */
@@ -123,15 +131,23 @@ function updateSearch() {
 }
 $('symptomSearch').addEventListener('input', updateSearch);
 
+/** Loads the symptom list in the current language and keeps the boxes that are already ticked. */
+async function loadSymptoms() {
+  const keep = new Set(selected());
+  const { data } = await fetchSymptoms();
+  state.urgent = data.urgent_symptoms || [];
+  state.combinations = data.urgent_combinations || [];
+  renderSymptoms(data.symptoms || [], $('checks'));
+  for (const input of $('checks').querySelectorAll('input')) input.checked = keep.has(input.value);
+  updateSearch();
+  updateUrgent();
+  updateControls();
+}
 async function init() {
   $('retry').hidden = true;
   status('status.loading');
   try {
-    const { data } = await fetchSymptoms();
-    state.urgent = data.urgent_symptoms || [];
-    state.combinations = data.urgent_combinations || [];
-    renderSymptoms(data.symptoms || [], $('checks'));
-    updateSearch();
+    await loadSymptoms();
     state.loaded = true;
     status(state.file ? 'status.ready' : 'status.pick');
   } catch (error) {
@@ -158,18 +174,17 @@ $('screenForm').addEventListener('reset', () => {
 });
 $('printResult').addEventListener('click', () => window.print());
 
-$('screenForm').addEventListener('submit', async event => {
-  event.preventDefault();
+async function analyze({ quiet = false } = {}) {
   if (state.busy || !state.loaded || !state.file) return;
   const ids = selected();
   state.busy = true;
-  clearResult();
+  if (!quiet) clearResult();
   updateControls();
   status('status.running');
   try {
     const { data, ok } = await screenImage(state.file, ids);
     state.result = data;
-    renderResult(data);
+    renderResult(data, { focus: !quiet });
     status(ok ? 'status.done' : 'status.symptomOnly');
   } catch (error) {
     status(error.message, true, true);
@@ -177,6 +192,10 @@ $('screenForm').addEventListener('submit', async event => {
     state.busy = false;
     updateControls();
   }
+}
+$('screenForm').addEventListener('submit', event => {
+  event.preventDefault();
+  analyze();
 });
 
 initTheme();

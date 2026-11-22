@@ -4,172 +4,211 @@
   "symptoms": [
     {
       "id": "gritty",
-      "label": "Cộm xốn / cảm giác có dị vật"
+      "label": "Cộm xốn / cảm giác có dị vật",
+      "label_en": "Gritty feeling / foreign body sensation"
     },
     {
       "id": "itch",
-      "label": "Ngứa mắt"
+      "label": "Ngứa mắt",
+      "label_en": "Itchy eyes"
     },
     {
       "id": "pain",
-      "label": "Đau nhức mắt"
+      "label": "Đau nhức mắt",
+      "label_en": "Eye pain or aching"
     },
     {
       "id": "severe_pain",
-      "label": "Đau mắt dữ dội"
+      "label": "Đau mắt dữ dội",
+      "label_en": "Severe eye pain"
     },
     {
       "id": "discharge",
-      "label": "Chảy ghèn / mi dính"
+      "label": "Chảy ghèn / mi dính",
+      "label_en": "Discharge / sticky eyelids"
     },
     {
       "id": "tearing",
-      "label": "Chảy nước mắt"
+      "label": "Chảy nước mắt",
+      "label_en": "Watery eyes"
     },
     {
       "id": "blurred",
-      "label": "Nhìn mờ mới xuất hiện hoặc tăng lên"
+      "label": "Nhìn mờ mới xuất hiện hoặc tăng lên",
+      "label_en": "New or worsening blurred vision"
     },
     {
       "id": "vision_loss",
-      "label": "Giảm / mất thị lực đột ngột"
+      "label": "Giảm / mất thị lực đột ngột",
+      "label_en": "Sudden decrease or loss of vision"
     },
     {
       "id": "photophobia",
-      "label": "Đau khi nhìn ánh sáng"
+      "label": "Đau khi nhìn ánh sáng",
+      "label_en": "Pain when looking at light"
     },
     {
       "id": "dry",
-      "label": "Khô / rát mắt"
+      "label": "Khô / rát mắt",
+      "label_en": "Dry / burning eyes"
     },
     {
       "id": "red_eye",
-      "label": "Tự thấy mắt đỏ"
+      "label": "Tự thấy mắt đỏ",
+      "label_en": "You notice your eye is red"
     },
     {
       "id": "lid_lump",
-      "label": "Có cục ở mí mắt"
+      "label": "Có cục ở mí mắt",
+      "label_en": "Lump on the eyelid"
     },
     {
       "id": "crusts",
-      "label": "Vảy ở chân lông mi"
+      "label": "Vảy ở chân lông mi",
+      "label_en": "Crusts at the base of the eyelashes"
     },
     {
       "id": "fever",
-      "label": "Sốt"
+      "label": "Sốt",
+      "label_en": "Fever"
     },
     {
       "id": "pain_movement",
-      "label": "Đau khi đảo mắt"
+      "label": "Đau khi đảo mắt",
+      "label_en": "Pain when moving the eye"
     },
     {
       "id": "double_vision",
-      "label": "Nhìn đôi mới xuất hiện"
+      "label": "Nhìn đôi mới xuất hiện",
+      "label_en": "New double vision"
     },
     {
       "id": "headache_nausea",
-      "label": "Đau đầu dữ dội kèm buồn nôn"
+      "label": "Đau đầu dữ dội kèm buồn nôn",
+      "label_en": "Severe headache with nausea"
     },
     {
       "id": "injury",
-      "label": "Chấn thương mắt hoặc dị vật mắc trong mắt"
+      "label": "Chấn thương mắt hoặc dị vật mắc trong mắt",
+      "label_en": "Eye injury or object stuck in the eye"
     },
     {
       "id": "chemical",
-      "label": "Hóa chất bắn vào mắt"
+      "label": "Hóa chất bắn vào mắt",
+      "label_en": "Chemical splashed in the eye"
     },
     {
       "id": "contacts",
-      "label": "Đang dùng kính áp tròng"
+      "label": "Đang dùng kính áp tròng",
+      "label_en": "Wearing contact lenses"
     },
     {
       "id": "yellow_skin",
-      "label": "Vàng da / tự thấy lòng trắng mắt vàng"
+      "label": "Vàng da / tự thấy lòng trắng mắt vàng",
+      "label_en": "Yellow skin / you notice the whites of your eyes are yellow"
     },
     {
       "id": "dark_urine",
-      "label": "Nước tiểu sẫm màu"
+      "label": "Nước tiểu sẫm màu",
+      "label_en": "Dark urine"
     },
     {
       "id": "fatigue",
-      "label": "Mệt mỏi bất thường"
+      "label": "Mệt mỏi bất thường",
+      "label_en": "Unusual tiredness"
     },
     {
       "id": "palpitations",
-      "label": "Hồi hộp / tim đập nhanh"
+      "label": "Hồi hộp / tim đập nhanh",
+      "label_en": "Palpitations / racing heart"
     },
     {
       "id": "breathless",
-      "label": "Khó thở khi gắng sức"
+      "label": "Khó thở khi gắng sức",
+      "label_en": "Shortness of breath on exertion"
     },
     {
       "id": "bulging",
-      "label": "Tự thấy mắt lồi mới xuất hiện"
+      "label": "Tự thấy mắt lồi mới xuất hiện",
+      "label_en": "You notice a new bulging of the eye"
     },
-    { 
-      "id": "flashes_floaters", 
-      "label": "Chớp sáng hoặc nhiều đốm đen bay xuất hiện đột ngột" 
+    {
+      "id": "flashes_floaters",
+      "label": "Chớp sáng hoặc nhiều đốm đen bay xuất hiện đột ngột",
+      "label_en": "Sudden flashes of light or many new dark floaters"
     },
-    { 
-      "id": "visual_curtain", 
-      "label": "Có vùng tối / màn che một phần thị trường" 
+    {
+      "id": "visual_curtain",
+      "label": "Có vùng tối / màn che một phần thị trường",
+      "label_en": "Dark area / curtain over part of your vision"
     }
   ],
   "image_signs": {
     "Normal": {
       "class_id": 0,
       "description": "Không thấy dấu hiệu nổi bật trong ảnh",
-      "priority": "low"
+      "priority": "low",
+      "description_en": "No notable signs seen in the image"
     },
     "Redness": {
       "class_id": 1,
       "description": "Đỏ mắt",
-      "priority": "medium"
+      "priority": "medium",
+      "description_en": "Redness of the eye"
     },
     "Blood Patch": {
       "class_id": 2,
       "description": "Mảng đỏ / máu trên mắt",
-      "priority": "medium"
+      "priority": "medium",
+      "description_en": "Red patch / blood on the eye"
     },
     "Swelling": {
       "class_id": 3,
       "description": "Sưng quanh mắt",
-      "priority": "medium"
+      "priority": "medium",
+      "description_en": "Swelling around the eye"
     },
     "Discharge": {
       "class_id": 4,
       "description": "Ghèn / dịch",
-      "priority": "medium"
+      "priority": "medium",
+      "description_en": "Discharge / fluid"
     },
     "Watery": {
       "class_id": 5,
       "description": "Chảy nước mắt",
-      "priority": "medium"
+      "priority": "medium",
+      "description_en": "Watery eye"
     },
     "Cornea Abnormal": {
       "class_id": 6,
       "description": "Bất thường vùng giác mạc cần được kiểm tra trực tiếp",
-      "priority": "high"
+      "priority": "high",
+      "description_en": "Abnormality of the cornea that needs in-person examination"
     },
     "Eyelid Abnormal": {
       "class_id": 7,
       "description": "Bất thường mí mắt",
-      "priority": "medium"
+      "priority": "medium",
+      "description_en": "Eyelid abnormality"
     },
     "Yellow Eye": {
       "class_id": 8,
       "description": "Lòng trắng mắt có vẻ vàng, cần đánh giá nguyên nhân",
-      "priority": "high"
+      "priority": "high",
+      "description_en": "The whites of the eye look yellow; the cause needs to be evaluated"
     },
     "Bulging Eye": {
       "class_id": 9,
       "description": "Mắt có vẻ lồi, cần được bác sĩ đánh giá",
-      "priority": "high"
+      "priority": "high",
+      "description_en": "The eye looks bulging; a doctor needs to evaluate it"
     },
     "Pale Inner Eyelid": {
       "class_id": 10,
       "description": "Mặt trong mí mắt có vẻ nhợt, ảnh không đủ xác định thiếu máu",
-      "priority": "medium"
+      "priority": "medium",
+      "description_en": "The inner eyelid looks pale; the image is not enough to determine anemia"
     }
   },
   "urgent_symptoms": [
@@ -192,7 +231,8 @@
         "red_eye"
       ],
       "image_signs": [],
-      "reason": "Đỏ mắt khi dùng kính áp tròng"
+      "reason": "Đỏ mắt khi dùng kính áp tròng",
+      "reason_en": "Red eye while wearing contact lenses"
     },
     {
       "id": "contacts_image",
@@ -202,7 +242,8 @@
       "image_signs": [
         "Redness"
       ],
-      "reason": "Ảnh gợi ý đỏ mắt khi dùng kính áp tròng"
+      "reason": "Ảnh gợi ý đỏ mắt khi dùng kính áp tròng",
+      "reason_en": "Image suggests a red eye while wearing contact lenses"
     },
     {
       "id": "orbit",
@@ -211,7 +252,8 @@
         "pain_movement"
       ],
       "image_signs": [],
-      "reason": "Sốt kèm đau khi đảo mắt"
+      "reason": "Sốt kèm đau khi đảo mắt",
+      "reason_en": "Fever with pain when moving the eye"
     },
     {
       "id": "jaundice",
@@ -219,7 +261,8 @@
         "yellow_skin"
       ],
       "image_signs": [],
-      "reason": "Tự ghi nhận vàng da hoặc vàng mắt"
+      "reason": "Tự ghi nhận vàng da hoặc vàng mắt",
+      "reason_en": "Self-reported yellow skin or yellow eyes"
     },
     {
       "id": "new_bulging",
@@ -227,7 +270,8 @@
         "bulging"
       ],
       "image_signs": [],
-      "reason": "Tự ghi nhận mắt lồi mới xuất hiện"
+      "reason": "Tự ghi nhận mắt lồi mới xuất hiện",
+      "reason_en": "Self-reported new bulging of the eye"
     }
   ],
   "diseases": [
@@ -245,7 +289,9 @@
         "red_eye",
         "tearing"
       ],
-      "note": "Nhiều nguyên nhân có biểu hiện giống nhau; cần khám để phân biệt."
+      "note": "Nhiều nguyên nhân có biểu hiện giống nhau; cần khám để phân biệt.",
+      "name_en": "Conjunctivitis",
+      "note_en": "Many causes look similar; an examination is needed to tell them apart."
     },
     {
       "id": "pattern_2",
@@ -260,7 +306,9 @@
         "tearing",
         "red_eye"
       ],
-      "note": "Ngứa và chảy nước mắt có thể gặp trong dị ứng hoặc kích ứng."
+      "note": "Ngứa và chảy nước mắt có thể gặp trong dị ứng hoặc kích ứng.",
+      "name_en": "Eye irritation / allergy",
+      "note_en": "Itching and watery eyes can occur with allergy or irritation."
     },
     {
       "id": "pattern_3",
@@ -274,7 +322,9 @@
         "gritty",
         "tearing"
       ],
-      "note": "Cần đánh giá bề mặt mắt nếu kéo dài."
+      "note": "Cần đánh giá bề mặt mắt nếu kéo dài.",
+      "name_en": "Dry eye",
+      "note_en": "The surface of the eye needs to be evaluated if it lasts."
     },
     {
       "id": "pattern_4",
@@ -285,7 +335,9 @@
       "symptoms": [
         "red_eye"
       ],
-      "note": "Không thể phân biệt nguyên nhân chỉ bằng ảnh; đau hoặc giảm thị lực cần khám ngay."
+      "note": "Không thể phân biệt nguyên nhân chỉ bằng ảnh; đau hoặc giảm thị lực cần khám ngay.",
+      "name_en": "Subconjunctival red patch",
+      "note_en": "The cause cannot be determined from a photo alone; pain or reduced vision needs urgent care."
     },
     {
       "id": "pattern_5",
@@ -301,7 +353,9 @@
         "gritty",
         "lid_lump"
       ],
-      "note": "Bác sĩ cần kiểm tra mí và lông mi."
+      "note": "Bác sĩ cần kiểm tra mí và lông mi.",
+      "name_en": "Eyelid problem / blepharitis",
+      "note_en": "A doctor needs to examine the eyelids and lashes."
     },
     {
       "id": "pattern_6",
@@ -316,7 +370,9 @@
         "blurred",
         "gritty"
       ],
-      "note": "Ảnh ngoài mắt không xác định được loại tổn thương hoặc đục thủy tinh thể."
+      "note": "Ảnh ngoài mắt không xác định được loại tổn thương hoặc đục thủy tinh thể.",
+      "name_en": "Corneal abnormality",
+      "note_en": "A photo of the outside of the eye cannot identify the type of injury or a cataract."
     },
     {
       "id": "pattern_7",
@@ -328,7 +384,9 @@
         "yellow_skin",
         "dark_urine"
       ],
-      "note": "Cần khám để đánh giá nguyên nhân vàng mắt; không suy ra bệnh gan từ ảnh."
+      "note": "Cần khám để đánh giá nguyên nhân vàng mắt; không suy ra bệnh gan từ ảnh.",
+      "name_en": "Yellow eyes needing a whole-body check",
+      "note_en": "An examination is needed to find the cause of yellow eyes; liver disease cannot be inferred from a photo."
     },
     {
       "id": "pattern_8",
@@ -341,7 +399,9 @@
         "double_vision",
         "palpitations"
       ],
-      "note": "Có nhiều nguyên nhân; cần khám trực tiếp."
+      "note": "Có nhiều nguyên nhân; cần khám trực tiếp.",
+      "name_en": "Bulging eye needing an orbit / thyroid check",
+      "note_en": "There are many causes; an in-person examination is needed."
     },
     {
       "id": "pattern_9",
@@ -354,7 +414,9 @@
         "palpitations",
         "breathless"
       ],
-      "note": "Chỉ xét nghiệm và đánh giá lâm sàng mới xác định thiếu máu."
+      "note": "Chỉ xét nghiệm và đánh giá lâm sàng mới xác định thiếu máu.",
+      "name_en": "Pale signs needing an anemia check",
+      "note_en": "Only tests and a clinical evaluation can confirm anemia."
     }
   ],
   "sources": [
@@ -375,5 +437,6 @@
       "scope": "Triệu chứng toàn thân liên quan thiếu máu"
     }
   ],
-  "rule_notes": "Các trọng số 2 điểm ảnh + 1 điểm mỗi triệu chứng và ngưỡng 0.60 là thiết kế kỹ thuật chưa hiệu chuẩn, không phải quy tắc được các nguồn xác nhận. Bỏ chọn không được coi là bằng chứng loại trừ. Normal không trừ điểm triệu chứng."
+  "rule_notes": "Các trọng số 2 điểm ảnh + 1 điểm mỗi triệu chứng và ngưỡng 0.60 là thiết kế kỹ thuật chưa hiệu chuẩn, không phải quy tắc được các nguồn xác nhận. Bỏ chọn không được coi là bằng chứng loại trừ. Normal không trừ điểm triệu chứng.",
+  "disclaimer_en": "Prototype to support screening, not clinically validated. Priority level and match score are not a diagnosis or a probability of having a disease."
 }

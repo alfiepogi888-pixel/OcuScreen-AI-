@@ -1,4 +1,4 @@
-import { t } from './i18n.js';
+import { t, getLang } from './i18n.js';
 
 /** JSON transport, including symptom-only results returned with HTTP 503. */
 export async function requestJSON(url, options = {}, timeout = 90000) {
@@ -26,12 +26,12 @@ export async function requestJSON(url, options = {}, timeout = 90000) {
 }
 
 export function fetchSymptoms() {
-  return requestJSON('/api/symptoms', {}, 15000);
+  return requestJSON('/api/symptoms?lang=' + getLang(), {}, 15000);
 }
 
 export function screenImage(file, symptoms) {
   const body = new FormData();
   body.append('image', file);
   body.append('symptoms', JSON.stringify(symptoms));
-  return requestJSON('/api/screen', { method: 'POST', body }, 120000);
+  return requestJSON('/api/screen?lang=' + getLang(), { method: 'POST', body }, 120000);
 }
