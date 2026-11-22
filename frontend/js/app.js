@@ -18,7 +18,6 @@ function updateControls() {
   $('symptomSearch').disabled = state.busy || !state.loaded;
   $('symptomField').disabled = state.busy || !state.loaded;
   $('screenForm').querySelector('[type=reset]').disabled = state.busy;
-  $('screenForm').setAttribute('aria-busy', String(state.busy));
   $('selectedCount').textContent = `${selected().length} đã chọn`;
   const active = !$('result').hidden ? 'stepResult' : state.file ? 'stepSymptoms' : 'stepImage';
   for (const id of ['stepImage', 'stepSymptoms', 'stepResult']) {
@@ -27,6 +26,102 @@ function updateControls() {
   }
 }
 function clearResult() { $('result').hidden = true; }
+
+// Dark mode toggle functionality
+const darkModeToggle = byId('darkModeToggle');
+const body = document.body;
+let isDarkMode = false;
+
+if (darkModeToggle) {
+  // Check for saved preference or system preference
+  const savedTheme = localStorage.getItem('theme') || 'auto';
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    isDarkMode = true;
+    body.classList.add('dark');
+  } else {
+    body.classList.remove('dark');
+  }
+
+  // Toggle function
+  const toggleDarkMode = () => {
+    isDarkMode = !isDarkMode;
+    if (isDarkMode) {
+      body.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      body.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
+
+  darkModeToggle.addEventListener('change', toggleDarkMode);
+}
+
+// Drag and drop functionality for upload area
+const dropzone = $('dropzone');
+const imageInput = $('image');
+
+function handleDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  // Remove drag classes
+  dropzone.classList.remove('dragging');
+  
+  // Get files from data transfer
+  const files = e.dataTransfer.files;
+  
+  if (files.length > 0) {
+    // Trigger the upload change handler with the first file
+    const firstFile = files[0];
+    
+    // Validate the file first
+    const validationError = validateFile(firstFile);
+    if (validationError) {
+      status(validationError, true);
+      return;
+    }
+    
+    // Clear previous upload and set new file
+    upload.clear();
+    state.file = firstFile;
+    clearResult();
+    status(firstFile ? 'Ảnh đã sẵn sàng. Kiểm tra triệu chứng rồi phân tích.' : 'Chọn ảnh mắt để bắt đầu.');
+    updateControls();
+  }
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  dropzone.classList.add('dragging');
+}
+
+function handleDragLeave(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  dropzone.classList.remove('dragging');
+}
+
+// Attach drag and drop event listeners
+dropzone.addEventListener('dragover', handleDragOver);
+dropzone.addEventListener('dragleave', handleDragLeave);
+dropzone.addEventListener('drop', handleDrop);
+
+// Hide browse button (if it exists)
+const browseButton = $('browseImage') || $('image').parentElement.querySelector('input[type="file"]');
+if (browseButton && browseButton !== imageInput) {
+  browseButton.style.display = 'none';
+}
+
+function validateFile(file) {
+  if (!file || !file.size) return 'Hãy chọn một ảnh mắt.';
+  const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+  if (file.size > MAX_BYTES) return 'Ảnh lớn hơn 5 MB. Hãy chọn ảnh nhỏ hơn.';
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) return 'Chỉ nhận ảnh JPEG, PNG hoặc WebP.';
+  return null;
+}
+
 const upload = createUpload({
   input: $('image'), dropzone: $('dropzone'), preview: $('preview'), meta: $('fileMeta'),
   isBusy: () => state.busy,
