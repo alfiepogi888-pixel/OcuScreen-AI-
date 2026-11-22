@@ -1,11 +1,11 @@
 import { fetchSymptoms, screenImage } from './api.js';
 import { byId as $, renderSymptoms, renderResult, filterSymptoms } from './components.js';
 import { hasUrgentSymptoms } from './validation.js';
-
 import { createUpload } from './upload.js';
 
 const state = { file: null, loaded: false, busy: false, urgent: [], combinations: [] };
 const selected = () => [...$('checks').querySelectorAll('input:checked')].map(input => input.value);
+
 function status(message, error = false) {
   $('status').textContent = message;
   $('status').dataset.error = String(error);
@@ -13,6 +13,7 @@ function status(message, error = false) {
 function updateControls() {
   $('submit').disabled = state.busy || !state.loaded || !state.file;
   $('submit').textContent = state.busy ? 'Đang phân tích…' : 'Phân tích sàng lọc';
+  $('screenForm').setAttribute('aria-busy', String(state.busy));
   $('image').disabled = state.busy;
   $('dropzone').classList.toggle('disabled', state.busy);
   $('symptomSearch').disabled = state.busy || !state.loaded;
@@ -26,114 +27,37 @@ function updateControls() {
   }
 }
 function clearResult() { $('result').hidden = true; }
-
-// Dark mode toggle functionality
-const darkModeToggle = byId('darkModeToggle');
-const body = document.body;
-let isDarkMode = false;
-
-if (darkModeToggle) {
-  // Check for saved preference or system preference
-  const savedTheme = localStorage.getItem('theme') || 'auto';
-  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    isDarkMode = true;
-    body.classList.add('dark');
-  } else {
-    body.classList.remove('dark');
-  }
-
-  // Toggle function
-  const toggleDarkMode = () => {
-    isDarkMode = !isDarkMode;
-    if (isDarkMode) {
-      body.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      body.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
-
-  darkModeToggle.addEventListener('change', toggleDarkMode);
+function updateUrgent() {
+  $('urgentHint').hidden = !hasUrgentSymptoms(selected(), state.urgent, state.combinations);
 }
 
-// Drag and drop functionality for upload area - only handle in app.js, not in upload.js
-const dropzone = $('dropzone');
-const imageInput = $('image');
-
-function handleDrop(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  
-  // Remove drag classes
-  dropzone.classList.remove('dragging');
-  
-  // Get files from data transfer
-  const files = e.dataTransfer.files;
-  
-  if (files.length > 0) {
-    // Trigger the upload change handler with the first file
-    const firstFile = files[0];
-    
-    // Validate the file first
-    const validationError = validateFile(firstFile);
-    if (validationError) {
-      status(validationError, true);
-      return;
-    }
-    
-    // Clear previous upload and set new file
-    upload.clear();
-    state.file = firstFile;
-    clearResult();
-    status(firstFile ? 'Ảnh đã sẵn sàng. Kiểm tra triệu chứng rồi phân tích.' : 'Chọn ảnh mắt để bắt đầu.');
-    updateControls();
-  }
+/* Light / dark theme: saved choice first, otherwise follow the system setting. */
+function applyTheme(theme) {
+  const dark = theme === 'dark';
+  document.documentElement.dataset.theme = theme;
+  $('themeToggle').textContent = dark ? '☀️ Sáng' : '🌙 Tối';
+  $('themeToggle').setAttribute('aria-pressed', String(dark));
+}
+function initTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem('theme'); } catch { /* storage blocked */ }
+  applyTheme(saved === 'dark' || saved === 'light' ? saved
+    : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  $('themeToggle').addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try { localStorage.setItem('theme', next); } catch { /* storage blocked */ }
+  });
 }
 
-function handleDragOver(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  dropzone.classList.add('dragging');
+/* Stop the browser from opening a file that is dropped outside the dropzone. */
+for (const type of ['dragover', 'drop']) {
+  window.addEventListener(type, event => {
+    if (event.dataTransfer?.types?.includes('Files')) event.preventDefault();
+  });
 }
 
-function handleDragLeave(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  dropzone.classList.remove('dragging');
-}
-
-// Attach drag and drop event listeners - only in app.js, not in upload.js
-dropzone.addEventListener('dragover', handleDragOver);
-dropzone.addEventListener('dragleave', handleDragLeave);
-dropzone.addEventListener('drop', handleDrop);
-
-// Hide browse button (if it exists) - FIXED: Check both possible locations
-const browseButton = $('browseImage');
-if (!browseButton) {
-  // Try to find the file input inside the image element's parent
-  const parentContainer = $('image').closest('.file-input-container') || $('image').parentElement;
-  if (parentContainer) {
-    const hiddenInput = parentContainer.querySelector('input[type="file"]');
-    if (hiddenInput && hiddenInput !== imageInput) {
-      browseButton = hiddenInput;
-    }
-  }
-}
-
-// Only hide the browse button if it's a different element than the main image input
-if (browseButton && browseButton !== imageInput) {
-  browseButton.style.display = 'none';
-}
-
-function validateFile(file) {
-  if (!file || !file.size) return 'Hãy chọn một ảnh mắt.';
-  const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
-  if (file.size > MAX_BYTES) return 'Ảnh lớn hơn 5 MB. Hãy chọn ảnh nhỏ hơn.';
-  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) return 'Chỉ nhận ảnh JPEG, PNG hoặc WebP.';
-  return null;
-}
-
+/* upload.js owns the file input, preview and drag-and-drop. */
 const upload = createUpload({
   input: $('image'), dropzone: $('dropzone'), preview: $('preview'), meta: $('fileMeta'),
   isBusy: () => state.busy,
@@ -145,19 +69,20 @@ const upload = createUpload({
     updateControls();
   },
 });
+
 function updateSearch() {
-  const visible = filterSymptoms($('checks'), $('symptomSearch').value);
-  $('emptySearch').hidden = visible > 0;
+  $('emptySearch').hidden = filterSymptoms($('checks'), $('symptomSearch').value) > 0;
 }
 $('symptomSearch').addEventListener('input', updateSearch);
+
 async function init() {
   $('retry').hidden = true;
   status('Đang tải danh sách triệu chứng…');
   try {
     const { data } = await fetchSymptoms();
-    state.urgent = data.urgent_symptoms;
+    state.urgent = data.urgent_symptoms || [];
     state.combinations = data.urgent_combinations || [];
-    renderSymptoms(data.symptoms, $('checks'));
+    renderSymptoms(data.symptoms || [], $('checks'));
     updateSearch();
     state.loaded = true;
     status(state.file ? 'Sẵn sàng phân tích.' : 'Chọn ảnh mắt để bắt đầu.');
@@ -168,20 +93,22 @@ async function init() {
   updateControls();
 }
 $('retry').addEventListener('click', init);
+
 $('checks').addEventListener('change', () => {
   clearResult();
-  $('urgentHint').hidden = !hasUrgentSymptoms(selected(), state.urgent, state.combinations);
+  updateUrgent();
   updateControls();
 });
 $('screenForm').addEventListener('reset', () => {
   clearResult();
   upload.clear();
   state.file = null;
-  $('fileMeta').textContent = '';
-  $('urgentHint').hidden = true;
   status(state.loaded ? 'Chọn ảnh mắt để bắt đầu.' : 'Hãy tải lại danh sách triệu chứng.');
-  queueMicrotask(() => { updateSearch(); updateControls(); });
+  // The browser clears the checkboxes after this event, so refresh the UI on the next tick.
+  setTimeout(() => { updateSearch(); updateUrgent(); updateControls(); }, 0);
 });
+$('printResult').addEventListener('click', () => window.print());
+
 $('screenForm').addEventListener('submit', async event => {
   event.preventDefault();
   if (state.busy || !state.loaded || !state.file) return;
@@ -190,10 +117,6 @@ $('screenForm').addEventListener('submit', async event => {
   clearResult();
   updateControls();
   status('Đang phân tích ảnh và triệu chứng…');
-  
-  // Add loading spinner class to submit button
-  $('submit').classList.add('loading');
-  
   try {
     const { data, ok } = await screenImage(state.file, ids);
     renderResult(data);
@@ -202,9 +125,10 @@ $('screenForm').addEventListener('submit', async event => {
     status(error.message, true);
   } finally {
     state.busy = false;
-    $('submit').classList.remove('loading');
     updateControls();
   }
 });
+
+initTheme();
 updateControls();
 init();

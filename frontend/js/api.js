@@ -5,27 +5,15 @@ export async function requestJSON(url, options = {}, timeout = 90000) {
   try {
     const response = await fetch(url, { ...options, signal: controller.signal });
     let data = null;
+    try { data = await response.json(); } catch { /* body is not JSON */ }
     if (response.ok) {
-      try {
-        data = await response.json();
-      } catch (e) {
-        // Non-JSON response - treat as error
-        throw new Error('Máy chủ trả về dữ liệu không hợp lệ.');
-      }
+      if (!data) throw new Error('Máy chủ trả về dữ liệu không hợp lệ.');
+      return { data, ok: true };
     }
-    
-    // Check for error responses with detail field
-    if (!data && !response.ok) {
-      throw new Error(typeof data?.detail === 'string' ? data.detail :
-        'Máy chủ chưa trả được kết quả. Vui lòng thử lại.');
-    }
-    
-    // For 503 responses, accept them even without risk field (symptom-only results)
-    if (!response.ok && !data?.risk) {
-      throw new Error('Model chưa sẵn sàng. Chỉ có kết quả triệu chứng.');
-    }
-    
-    return { data, ok: response.ok };
+    // Model unavailable: the server still returns a symptom-only result with a `risk` field.
+    if (data?.risk) return { data, ok: false };
+    throw new Error(typeof data?.detail === 'string' ? data.detail
+      : 'Máy chủ chưa trả được kết quả. Vui lòng thử lại.');
   } catch (error) {
     if (error.name === 'AbortError') throw new Error('Máy chủ phản hồi quá lâu. Vui lòng thử lại.');
     if (error instanceof TypeError) throw new Error('Không kết nối được máy chủ. Kiểm tra kết nối rồi thử lại.');
