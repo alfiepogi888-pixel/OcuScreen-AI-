@@ -45,6 +45,47 @@ class InvalidImage(ValueError):
     pass
 
 
+# Messages shown to the user (vi / en). Errors that only go to the server log stay as they are.
+TEXT = {
+    "size": {
+        "vi": "Ảnh phải có dung lượng từ 1 byte đến 5 MB.",
+        "en": "The image must be between 1 byte and 5 MB.",
+    },
+    "format": {
+        "vi": "Chỉ nhận ảnh JPEG, PNG hoặc WebP.",
+        "en": "Only JPEG, PNG or WebP images are accepted.",
+    },
+    "animated": {
+        "vi": "Vui lòng dùng ảnh tĩnh.",
+        "en": "Please use a still image.",
+    },
+    "dimensions": {
+        "vi": "Ảnh cần ít nhất 64×64 và không quá 12 megapixel.",
+        "en": "The image must be at least 64×64 and no more than 12 megapixels.",
+    },
+    "unreadable": {
+        "vi": "Không đọc được ảnh. Hãy chọn ảnh mắt rõ nét khác.",
+        "en": "Could not read the image. Please choose another clear eye photo.",
+    },
+    "msg_invalid": {
+        "vi": "Ảnh được nhận diện là Back Ground. Hãy chụp lại cận cảnh mắt, đủ sáng, mắt nằm giữa ảnh.",
+        "en": "The image was recognized as Back Ground. Retake a close-up of the eye with good lighting and the eye centered.",
+    },
+    "msg_uncertain": {
+        "vi": "Model chưa đủ chắc chắn. Hãy chụp lại ảnh; cảnh báo triệu chứng bên dưới vẫn có giá trị.",
+        "en": "The model is not confident enough. Retake the photo; the symptom warnings below are still valid.",
+    },
+    "msg_valid": {
+        "vi": "Đã phân tích ảnh. Điểm model không phải xác suất mắc bệnh.",
+        "en": "Image analyzed. The model score is not the probability of having a disease.",
+    },
+}
+
+
+def text(key, lang="vi"):
+    return TEXT[key]["en" if lang == "en" else "vi"]
+
+
 def read_labels(path=LABELS_PATH):
     labels = []
     for line in Path(path).read_text(encoding="utf-8-sig").splitlines():
@@ -83,24 +124,22 @@ def load_artifacts():
             ) from exc
 
 
-def preprocess(image_bytes):
+def preprocess(image_bytes, lang="vi"):
     if not image_bytes or len(image_bytes) > MAX_BYTES:
-        raise InvalidImage("Ảnh phải có dung lượng từ 1 byte đến 5 MB.")
+        raise InvalidImage(text("size", lang))
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("error", Image.DecompressionBombWarning)
             with Image.open(BytesIO(image_bytes)) as original:
                 if original.format not in {"JPEG", "PNG", "WEBP"}:
-                    raise InvalidImage("Chỉ nhận ảnh JPEG, PNG hoặc WebP.")
+                    raise InvalidImage(text("format", lang))
                 if getattr(original, "n_frames", 1) != 1:
-                    raise InvalidImage("Vui lòng dùng ảnh tĩnh.")
+                    raise InvalidImage(text("animated", lang))
                 if (
                     min(original.size) < 64
                     or original.width * original.height > 12_000_000
                 ):
-                    raise InvalidImage(
-                        "Ảnh cần ít nhất 64×64 và không quá 12 megapixel."
-                    )
+                    raise InvalidImage(text("dimensions", lang))
                 image = ImageOps.exif_transpose(original).convert("RGB")
                 image = ImageOps.fit(image, (224, 224), Image.Resampling.LANCZOS)
                 return ((np.asarray(image, dtype=np.float32) / 127.5) - 1.0)[None, ...]
@@ -113,11 +152,11 @@ def preprocess(image_bytes):
         Image.DecompressionBombError,
         Image.DecompressionBombWarning,
     ) as exc:
-        raise InvalidImage("Không đọc được ảnh. Hãy chọn ảnh mắt rõ nét khác.") from exc
+        raise InvalidImage(text("unreadable", lang)) from exc
 
 
-def predict_image(image_bytes):
-    batch = preprocess(image_bytes)
+def predict_image(image_bytes, lang="vi"):
+    batch = preprocess(image_bytes, lang)
     with _lock:
         model, labels = load_artifacts()
         try:
@@ -140,9 +179,9 @@ def predict_image(image_bytes):
         "invalid" if class_id == 11 else ("uncertain" if confidence < 0.60 else "valid")
     )
     messages = {
-        "invalid": "Ảnh được nhận diện là Back Ground. Hãy chụp lại cận cảnh mắt, đủ sáng, mắt nằm giữa ảnh.",
-        "uncertain": "Model chưa đủ chắc chắn. Hãy chụp lại ảnh; cảnh báo triệu chứng bên dưới vẫn có giá trị.",
-        "valid": "Đã phân tích ảnh. Điểm model không phải xác suất mắc bệnh.",
+        "invalid": text("msg_invalid", lang),
+        "uncertain": text("msg_uncertain", lang),
+        "valid": text("msg_valid", lang),
     }
     return {
         "class_id": class_id,
