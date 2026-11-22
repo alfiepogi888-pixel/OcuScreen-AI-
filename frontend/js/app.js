@@ -57,7 +57,7 @@ if (darkModeToggle) {
   darkModeToggle.addEventListener('change', toggleDarkMode);
 }
 
-// Drag and drop functionality for upload area
+// Drag and drop functionality for upload area - only handle in app.js, not in upload.js
 const dropzone = $('dropzone');
 const imageInput = $('image');
 
@@ -103,13 +103,25 @@ function handleDragLeave(e) {
   dropzone.classList.remove('dragging');
 }
 
-// Attach drag and drop event listeners
+// Attach drag and drop event listeners - only in app.js, not in upload.js
 dropzone.addEventListener('dragover', handleDragOver);
 dropzone.addEventListener('dragleave', handleDragLeave);
 dropzone.addEventListener('drop', handleDrop);
 
-// Hide browse button (if it exists)
-const browseButton = $('browseImage') || $('image').parentElement.querySelector('input[type="file"]');
+// Hide browse button (if it exists) - FIXED: Check both possible locations
+const browseButton = $('browseImage');
+if (!browseButton) {
+  // Try to find the file input inside the image element's parent
+  const parentContainer = $('image').closest('.file-input-container') || $('image').parentElement;
+  if (parentContainer) {
+    const hiddenInput = parentContainer.querySelector('input[type="file"]');
+    if (hiddenInput && hiddenInput !== imageInput) {
+      browseButton = hiddenInput;
+    }
+  }
+}
+
+// Only hide the browse button if it's a different element than the main image input
 if (browseButton && browseButton !== imageInput) {
   browseButton.style.display = 'none';
 }
