@@ -57,7 +57,7 @@ if (darkModeToggle) {
   darkModeToggle.addEventListener('change', toggleDarkMode);
 }
 
-// Drag and drop functionality for upload area
+// Drag and drop functionality for upload area - only handle in app.js, not in upload.js
 const dropzone = $('dropzone');
 const imageInput = $('image');
 
@@ -103,7 +103,7 @@ function handleDragLeave(e) {
   dropzone.classList.remove('dragging');
 }
 
-// Attach drag and drop event listeners
+// Attach drag and drop event listeners - only in app.js, not in upload.js
 dropzone.addEventListener('dragover', handleDragOver);
 dropzone.addEventListener('dragleave', handleDragLeave);
 dropzone.addEventListener('drop', handleDrop);
