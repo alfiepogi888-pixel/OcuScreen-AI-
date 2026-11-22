@@ -114,12 +114,10 @@ async def screen(request: Request):
             image_bytes = await file.read(MAX_BYTES + 1)
             try:
                 prediction = await run_in_threadpool(predict_image, image_bytes)
-                app.state.ready = True
             except InvalidImage as exc:
                 prediction = failed_prediction("invalid", str(exc))
             except ModelUnavailable:
                 log.exception("Inference unavailable")
-                app.state.ready = False
                 prediction = failed_prediction(
                     "unavailable",
                     "Model chưa sẵn sàng. Chỉ đánh giá triệu chứng; "
