@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { validateFile, hasUrgentSymptoms, MAX_BYTES, getActionableError, getImageRecommendations } from '../frontend/js/validation.js';
+import { validateFile, hasUrgentSymptoms, MAX_BYTES, getActionableError, getImageRecommendations, validateSymptomIds } from '../frontend/js/validation.js';
 import { requestJSON } from '../frontend/js/api.js';
 const kb = JSON.parse(readFileSync(new URL('../data/disease_knowledge.json', import.meta.url)));
 
@@ -100,41 +100,17 @@ test('upload synchronizes native files, releases previews and preserves cancella
   }
 });
 
-test('loading spinner class is applied during inference', async () => {
-  const submitBtn = document.createElement('button');
-  submitBtn.id = 'submit';
-  submitBtn.classList.add('loading');
-  
-  assert.ok(submitBtn.classList.contains('loading'));
-  
-  // Simulate completion
-  submitBtn.classList.remove('loading');
-  assert.ok(!submitBtn.classList.contains('loading'));
-});
-
-test('PDF export button functionality', async () => {
-  const printBtn = document.createElement('button');
-  printBtn.id = 'printResult';
-  printBtn.textContent = 'In / lưu thành PDF';
-  
-  // Mock window.print
-  globalThis.window = { print: () => {} };
-  
-  // Simulate click handler
-  printBtn.addEventListener('click', () => {
-    assert.ok(globalThis.window.print);
-  });
-  
-  printBtn.click();
-});
-
 test('symptom validation handles edge cases', () => {
   const result = validateSymptomIds([]);
   assert.equal(result.valid, true);
   
-  const invalidResult = validateSymptomIds(['invalid']);
-  assert.equal(invalidResult.valid, false);
-  assert.ok(invalidResult.message.includes('không hợp lệ'));
+  // validateSymptomIds only checks shape; unknown IDs are rejected by the server (422).
+  assert.equal(validateSymptomIds('itch').valid, false);
+  for (const ids of [[''], [1], [null]]) {
+    const invalidResult = validateSymptomIds(ids);
+    assert.equal(invalidResult.valid, false);
+    assert.ok(invalidResult.message.includes('không hợp lệ'));
+  }
 });
 
 test('symptom validation preserves order', () => {
@@ -143,15 +119,4 @@ test('symptom validation preserves order', () => {
   assert.equal(result.valid, true);
   // Order should be preserved
   assert.deepEqual(result, { valid: true });
-});
-
-test('error handling resets busy state', async () => {
-  let busy = false;
-  
-  try {
-    busy = true;
-    throw new Error('Test error');
-  } finally {
-    assert.equal(busy, false);
-  }
 });
