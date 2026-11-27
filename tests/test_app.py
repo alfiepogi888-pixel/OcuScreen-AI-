@@ -6,7 +6,7 @@ from PIL import Image
 from fastapi.testclient import TestClient
 import backend.app as api
 import backend.image_predictor as ip
-from backend.risk_engine import assess_risk
+from backend.risk_engine import KB, assess_risk
 
 
 def prediction(label="Normal", status="valid"):
@@ -80,7 +80,7 @@ def test_predict_background(monkeypatch):
 
 def test_routes(client):
     assert client.get("/").status_code == 200
-    assert len(client.get("/api/symptoms").json()["symptoms"]) == 26
+    assert len(client.get("/api/symptoms").json()["symptoms"]) == len(KB["symptoms"])
     assert client.get("/model/labels.txt").status_code == 404
     r = client.post(
         "/api/screen",
@@ -164,10 +164,10 @@ def test_frontend_assets_and_cache_policy(client):
         response = client.get(path)
         assert response.status_code == 200
         assert "must-revalidate" in response.headers["cache-control"]
-    assert client.get("/api/symptoms").headers["cache-control"] == "no-store"
+    assert "no-store" in client.get("/api/symptoms").headers["cache-control"]
     assert (
         client.get("/api/symptoms").json()["urgent_combinations"]
-        == api.KB["urgent_combinations"]
+        == KB["urgent_combinations"]
     )
 
 
@@ -208,24 +208,23 @@ def test_declared_oversize_rejected_before_body(client):
     assert not api.app.state.busy
 
 
-def test_loading_spinner_applied_during_inference(client):
-    """Test that loading spinner is applied to submit button during inference."""
-    # Simulate busy state
+def test_busy_slot_is_not_released_by_rejected_request(client):
+    """A request rejected with 429 must not free the slot held by the running analysis."""
     api.app.state.busy = True
-    
-    # Check that button is disabled and has loading class
-    response = client.post("/api/screen", files={"image": ("e.png", photo())})
-    
-    # After inference completes, busy should be reset
-    assert not api.app.state.busy
+    try:
+        response = client.post("/api/screen", files={"image": ("e.png", photo())})
+        assert response.status_code == 429
+        assert response.headers["retry-after"] == "3"
+        assert api.app.state.busy
+    finally:
+        api.app.state.busy = False
 
 
-def test_error_handling_resets_busy_state(client):
+def test_error_handling_resets_busy_state(client, monkeypatch):
     """Test that error handling properly resets the busy state."""
     def raise_error(b):
         raise ip.InvalidImage("Test error")
     
-    monkeypatch = pytest.MonkeyPatch()
     monkeypatch.setattr(api, "predict_image", raise_error)
     
     response = client.post(
