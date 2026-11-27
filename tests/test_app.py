@@ -80,7 +80,7 @@ def test_predict_background(monkeypatch):
 
 def test_routes(client):
     assert client.get("/").status_code == 200
-    assert len(client.get("/api/symptoms").json()["symptoms"]) == len(KB["symptoms"])
+    assert len(client.get("/api/symptoms").json()["symptoms"]) == len(KB["symptoms"]) == 28
     assert client.get("/model/labels.txt").status_code == 404
     r = client.post(
         "/api/screen",
